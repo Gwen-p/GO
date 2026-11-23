@@ -23,7 +23,7 @@ En este documento se detalla el proceso paso a paso para instalar el compilador 
 1. Descarga el instalador `.msi` desde la web oficial: [https://go.dev/dl/](https://go.dev/dl/).
 2. Ejecuta el asistente manteniendo la ruta por defecto (`C:\Program Files\Go`). El instalador añadirá Go automáticamente a la variable de entorno `PATH`.
 3. Abre una nueva terminal (PowerShell o CMD) y comprueba la instalación:
-   ```bash
+```bash
    go version
 ```
 
