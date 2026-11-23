@@ -11,7 +11,7 @@ Se introduce el lenguaje de programación **Go (Golang)** replicando los fundame
 
 ```text
 GO/
-├── codigo/
+├── code/
 │   ├── 01_introduccion/      # Fundamentos del lenguaje (variables, slices, maps, bucles, errores)
 │   ├── 02_postgresql/        # Conexión y CRUD parametrizado ($1, $2) con pgx
 │   └── 03_oracle/            # Conexión y CRUD parametrizado (:1, :2) con go-ora
@@ -50,17 +50,17 @@ go mod tidy
 
 
 3. **Configura tus credenciales:**
-Edita la cadena de conexión (`dsn`) en `codigo/02_postgresql/02_acceso_postgresql.go` y `codigo/03_oracle/03_acceso_oracle.go` con tu usuario, contraseña, host y puerto.
+Edita la cadena de conexión (`dsn`) en `code/02_postgresql/02_acceso_postgresql.go` y `code/03_oracle/03_acceso_oracle.go` con tu usuario, contraseña, host y puerto.
 4. **Ejecuta los scripts:**
 ```bash
 # 1. Introducción a Go
-go run ./codigo/01_introduccion/01_introduccion.go
+go run ./code/01_introduccion/01_introduccion.go
 
 # 2. Acceso a PostgreSQL (incluye inserción interactiva para demo)
-go run ./codigo/02_postgresql/02_acceso_postgresql.go
+go run ./code/02_postgresql/02_acceso_postgresql.go
 
 # 3. Acceso a Oracle
-go run ./codigo/03_oracle/03_acceso_oracle.go
+go run ./code/03_oracle/03_acceso_oracle.go
 
 ```
 
