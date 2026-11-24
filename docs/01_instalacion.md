@@ -1,4 +1,3 @@
-
 # Guía de instalación y configuración del entorno
 
 En este documento se detalla el proceso paso a paso para instalar el compilador de **Go**, inicializar el módulo del proyecto y descargar los controladores (*drivers*) necesarios para conectar con **PostgreSQL** y **Oracle**.
@@ -16,50 +15,55 @@ En este documento se detalla el proceso paso a paso para instalar el compilador 
 | **Editor recomendado** | Visual Studio Code | Instalar la extensión oficial **Go** (de Go Team at Google). |
 
 
-
 ## 2. Instalación de Go
 
 ### En Windows
+
 1. Descarga el instalador `.msi` desde la web oficial: [https://go.dev/dl/](https://go.dev/dl/).
 2. Ejecuta el asistente manteniendo la ruta por defecto (`C:\Program Files\Go`). El instalador añadirá Go automáticamente a la variable de entorno `PATH`.
-3. Abre una nueva terminal (PowerShell o CMD) y comprueba la instalación:
-```bash
+3. Abre una **nueva** terminal (PowerShell o CMD) y comprueba la instalación:
+   ```bash
    go version
-```
+   ```
+   Deberías obtener algo como: `go version go1.22.x windows/amd64`.
 
 ### En Linux (Ubuntu / Debian)
 
 1. Descarga el archivo `.tar.gz` desde [https://go.dev/dl/](https://go.dev/dl/) y extráelo en `/usr/local`:
-```bash
-sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf go1.22.x.linux-amd64.tar.gz
-```
-
+   ```bash
+   sudo rm -rf /usr/local/go
+   sudo tar -C /usr/local -xzf go1.22.x.linux-amd64.tar.gz
+   ```
 
 2. Añade Go al `PATH` editando `~/.bashrc` o `~/.zshrc`:
-```bash
-export PATH=$PATH:/usr/local/go/bin
-```
-
+   ```bash
+   export PATH=$PATH:/usr/local/go/bin
+   ```
 
 3. Recarga la configuración y verifica la versión:
-```bash
-source ~/.bashrc
-go version
-```
-
-
+   ```bash
+   source ~/.bashrc
+   go version
+   ```
 
 ### En macOS
 
-* Instala mediante el paquete `.pkg` oficial desde [https://go.dev/dl/](https://go.dev/dl/) o usando Homebrew:
+Instala mediante el paquete `.pkg` oficial desde [https://go.dev/dl/](https://go.dev/dl/) o usando Homebrew:
 ```bash
 brew install go
 go version
 ```
 
 
-## 3. Inicialización del proyecto y descarga de drivers
+## 3. Configuración del editor (VS Code)
+
+1. Instala [Visual Studio Code](https://code.visualstudio.com/).
+2. Abre VS Code y ve a la pestaña de extensiones (`Ctrl+Shift+X`).
+3. Busca **"Go"** e instala la extensión oficial de **Go Team at Google**.
+4. Al abrir un archivo `.go` por primera vez, VS Code te pedirá instalar herramientas auxiliares (`gopls`, `dlv`, etc.). Acepta para habilitar autocompletado, formateo automático y depuración.
+
+
+## 4. Inicialización del proyecto y descarga de drivers
 
 Si partes desde cero (sin clonar el repositorio), abre una terminal dentro de la carpeta raíz del proyecto y ejecuta:
 
@@ -68,10 +72,10 @@ Si partes desde cero (sin clonar el repositorio), abre una terminal dentro de la
 go mod init proyecto_go_bd
 
 # 2. Descargar el driver de PostgreSQL
-go get [github.com/jackc/pgx/v5/stdlib](https://github.com/jackc/pgx/v5/stdlib)
+go get github.com/jackc/pgx/v5/stdlib
 
 # 3. Descargar el driver de Oracle (Go puro)
-go get [github.com/sijms/go-ora/v2](https://github.com/sijms/go-ora/v2)
+go get github.com/sijms/go-ora/v2
 
 # 4. Limpiar y sincronizar dependencias en go.mod y go.sum
 go mod tidy
@@ -79,11 +83,40 @@ go mod tidy
 
 Si ya has clonado este repositorio, basta con ejecutar `go mod tidy` en la raíz para descargar automáticamente las versiones exactas registradas en `go.mod`.
 
+### Verificar que los drivers se descargaron correctamente
+
+Tras ejecutar `go mod tidy`, puedes comprobar que las dependencias están presentes:
+
+```bash
+go list -m all
+```
+
+Deberías ver en la salida las líneas:
+```
+github.com/jackc/pgx/v5 v5.x.x
+github.com/sijms/go-ora/v2 v2.x.x
+```
 
 
-## 4. Verificación previa de las bases de datos
+## 5. Verificación previa de las bases de datos
 
-Antes de ejecutar los scripts de acceso a datos, asegúrate de que los servicios de base de datos están activos:
+Antes de ejecutar los scripts de acceso a datos, asegúrate de que los servicios de base de datos están activos y accesibles:
 
-* **PostgreSQL:** Servicio activo en `localhost:5432` con la base de datos `empresa` creada (o ajusta el nombre en la variable `dsn`).
+* **PostgreSQL:** Servicio activo en `localhost:5432` con la base de datos `Empresa` creada (o ajusta el nombre en la variable `dsn`/`url` del código fuente).
 * **Oracle:** Instancia activa en `localhost:1521` y servicio `XE` (o el nombre de servicio configurado en tu máquina) escuchando conexiones.
+
+> **Nota sobre el firewall:** Si las bases de datos están en otra máquina o contenedor Docker, asegúrate de que los puertos `5432` (PostgreSQL) y `1521` (Oracle) están abiertos y accesibles desde tu equipo.
+
+### Comprobar la conectividad manualmente
+
+Puedes verificar que el puerto está accesible antes de ejecutar los scripts de Go:
+
+```bash
+# En Windows (PowerShell)
+Test-NetConnection localhost -Port 5432
+Test-NetConnection localhost -Port 1521
+
+# En Linux / macOS
+nc -zv localhost 5432
+nc -zv localhost 1521
+```
